@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Allowance</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="add_transaction">Add Transaction</string>
     <string name="action_settings">Settings</string>
 
 </resources>
