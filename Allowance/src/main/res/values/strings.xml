@@ -10,5 +10,7 @@
     <string name="empty">No transactions.\nYour piggy bank is laughing at you.</string>
     <string name="empty_transaction">Really, a $0 transaction? Shenanigans.</string>
     <string name="action_settings">Settings</string>
+    <string name="instructions">Enter the transaction amount and description below, then tap the button to add it.</string>
+    <string name="spend_responsibly">Spend responsibly.</string>
 
 </resources>

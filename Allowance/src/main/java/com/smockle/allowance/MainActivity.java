@@ -11,14 +11,45 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class MainActivity extends Activity {
 
     SharedPreferences storage = null;
-    private float allowance;
-    public float balance = 90; // TODO: Allow this to be set in settings instead of hardcoding.
+    public float allowance;
+    public float balance;
     public ArrayList<Transaction> transactions;
     private String transactions_portable;
+
+    void hackBalance() {
+        balance = allowance;
+        if (transactions != null) {
+            for (Iterator<Transaction> i = transactions.iterator(); i.hasNext(); ) {
+                Transaction t = i.next();
+                balance -= t.amount;
+            }
+        }
+    }
+
+    public void exportPrefs() {
+        balance = allowance;
+        storage.edit().putFloat("allowance", allowance).commit();
+        storage.edit().putFloat("balance", balance).commit();
+        storage.edit().putBoolean("firstrun", false).commit();
+        Gson gson = new Gson();
+        transactions_portable = gson.toJson(transactions);
+        storage.edit().putString("transactions", transactions_portable).commit();
+    }
+
+    public void importPrefs() {
+        allowance = storage.getFloat("allowance", 90);
+        balance = storage.getFloat("balance", allowance);
+        transactions_portable = storage.getString("transactions", "");
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<Transaction>>(){}.getType();
+        transactions = gson.fromJson(transactions_portable, type);
+        hackBalance();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,26 +61,28 @@ public class MainActivity extends Activity {
                     .commit();
         }
         storage = getSharedPreferences("com.smockle.allowance", MODE_PRIVATE);
+        importPrefs();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        storage = getSharedPreferences("com.smockle.allowance", MODE_PRIVATE);
+        importPrefs();
+    }
 
-        if (storage.getBoolean("firstrun", true)) {
-            storage.edit().putFloat("allowance", allowance).commit();
-            storage.edit().putBoolean("firstrun", false).commit();
-            Gson gson = new Gson();
-            transactions_portable = gson.toJson(transactions);
-            storage.edit().putString("transactions", transactions_portable).commit();
-        } else {
-            storage.getFloat("allowance", allowance);
-            storage.getFloat("balance", balance);
-            storage.getString("transactions", transactions_portable);
-            Gson gson = new Gson();
-            Type type = new TypeToken<ArrayList<Transaction>>(){}.getType();
-            transactions = gson.fromJson(transactions_portable, type);
-        }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        storage = getSharedPreferences("com.smockle.allowance", MODE_PRIVATE);
+        exportPrefs();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        storage = getSharedPreferences("com.smockle.allowance", MODE_PRIVATE);
+        exportPrefs();
     }
 
 

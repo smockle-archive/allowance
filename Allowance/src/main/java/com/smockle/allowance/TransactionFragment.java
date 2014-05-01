@@ -21,6 +21,7 @@ import java.util.Date;
 public class TransactionFragment extends Fragment {
 
     private EditText mTransaction;
+    private EditText mTransactionDescription;
     private Button mAddTransaction;
 
     public TransactionFragment() {
@@ -38,6 +39,16 @@ public class TransactionFragment extends Fragment {
         return f;
     }
 
+    String getStringFromEditText(EditText transaction) {
+        String s;
+        try {
+            s = transaction.getText().toString();
+        } catch (NullPointerException e) {
+            return "";
+        }
+        return s;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -45,6 +56,7 @@ public class TransactionFragment extends Fragment {
 
         final MainActivity activity = (MainActivity)getActivity();
         mTransaction = (EditText) rootView.findViewById(R.id.transaction);
+        mTransactionDescription = (EditText) rootView.findViewById(R.id.transaction_description);
 
         mAddTransaction = (Button) rootView.findViewById(R.id.add_transaction);
         mAddTransaction.setOnClickListener(new View.OnClickListener() {
@@ -55,34 +67,34 @@ public class TransactionFragment extends Fragment {
             inputManager.hideSoftInputFromWindow((null == activity.getCurrentFocus()) ? null : activity.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
             // Update transactions.
-            Transaction t = new Transaction(getFloatFromEditText(mTransaction), "", new Date());
+            Transaction t = new Transaction(getFloatFromEditText(mTransaction), getStringFromEditText(mTransactionDescription), new Date());
 
             if (t.amount == 0) {
                 Toast.makeText(activity, R.string.empty_transaction, Toast.LENGTH_SHORT).show();
             } else {
+                if (activity.transactions == null) {
+                    activity.transactions = new ArrayList<Transaction>();
+                }
+                activity.transactions.add(t);
 
-            if (activity.transactions == null) {
-                activity.transactions = new ArrayList<Transaction>();
+                // Update balance.
+                activity.balance -= t.amount;
+
+                // Create new fragment_main.
+                MainFragment mainFragment = new MainFragment();
+                Bundle args = new Bundle();
+                mainFragment.setArguments(args);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                // Replace whatever is in the fragment_container view with this fragment,
+                // and add the transaction to the back stack so the user can navigate back
+                transaction.replace(R.id.container, mainFragment);
+                transaction.addToBackStack(null);
+
+                // Commit the transaction
+                transaction.commit();
             }
-            activity.transactions.add(t);
-
-            // Update balance.
-            activity.balance -= t.amount;
-
-            // Create new fragment_main.
-            MainFragment mainFragment = new MainFragment();
-            Bundle args = new Bundle();
-            mainFragment.setArguments(args);
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
-            // Replace whatever is in the fragment_container view with this fragment,
-            // and add the transaction to the back stack so the user can navigate back
-            transaction.replace(R.id.container, mainFragment);
-            transaction.addToBackStack(null);
-
-            // Commit the transaction
-            transaction.commit();
-            }}
+            }
         });
 
         if (savedInstanceState != null) {

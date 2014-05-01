@@ -2,6 +2,7 @@ package com.smockle.allowance;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,13 @@ public class MainFragment extends Fragment {
         MainActivity activity = (MainActivity)getActivity();
         mBalance = (TextView) rootView.findViewById(R.id.balance);
         mBalance.setText(String.format("$%.2f", activity.balance));
+
+        // Colorize balance based on value.
+        if (activity.balance <= 0) {
+            mBalance.setTextColor(Color.RED);
+        } else if (activity.balance < .10 * activity.allowance) {
+            mBalance.setTextColor(Color.YELLOW);
+        }
 
         mAddTransaction = (Button) rootView.findViewById(R.id.add_transaction);
         mAddTransaction.setOnClickListener(new View.OnClickListener() {
