@@ -9,11 +9,11 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class ViewFragment extends Fragment {
+public class ListFragment extends Fragment {
 
     private ArrayList<String> mOutputWords;
 
-    public ViewFragment() {
+    public ListFragment() {
     }
 
     // http://stackoverflow.com/a/5070922/1923134
@@ -21,7 +21,7 @@ public class ViewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        View rootView = inflater.inflate(R.layout.fragment_view, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_list, container, false);
         final MainActivity activity = (MainActivity)getActivity();
 
         ListView mTransactionsListView = (ListView) rootView.findViewById(R.id.transactions_list_view);

@@ -54,14 +54,14 @@ public class MainFragment extends Fragment {
         mViewTransactions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ViewFragment viewFragment = new ViewFragment();
+                ListFragment listFragment = new ListFragment();
                 Bundle args = new Bundle();
-                viewFragment.setArguments(args);
+                listFragment.setArguments(args);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
                 // Replace whatever is in the fragment_container view with this fragment,
                 // and add the transaction to the back stack so the user can navigate back
-                transaction.replace(R.id.container, viewFragment);
+                transaction.replace(R.id.container, listFragment);
                 transaction.addToBackStack(null);
 
                 // Commit the transaction
