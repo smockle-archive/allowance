@@ -3,6 +3,12 @@
 
     <string name="app_name">Allowance</string>
     <string name="add_transaction">Add Transaction</string>
+    <string name="view_transactions">View Transactions</string>
+    <string name="transaction_amount">Transaction Amount</string>
+    <string name="transaction_description">Transaction Description</string>
+    <string name="transaction_date">Transaction Date</string>
+    <string name="empty">No transactions. Your piggy bank is laughing at you.</string>
+    <string name="empty_transaction">You had a $0 transaction? Really?</string>
     <string name="action_settings">Settings</string>
 
 </resources>
